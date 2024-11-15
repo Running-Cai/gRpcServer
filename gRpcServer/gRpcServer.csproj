@@ -72,7 +72,7 @@
       <HintPath>..\packages\Grpc.Net.Common.2.46.0\lib\netstandard2.0\Grpc.Net.Common.dll</HintPath>
     </Reference>
     <Reference Include="halcondotnetxl">
-      <HintPath>..\..\..\..\..\..\Program Files\MVTec\HALCON-23.05-Progress\bin\dotnet35\halcondotnetxl.dll</HintPath>
+      <HintPath>C:\COER\halcondotnetxl.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=3.0.3.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.3.0.3\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
@@ -122,12 +122,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Utilities.YoloV5">
-      <HintPath>D:\c#\友达\S12\PidOMOffLine\Utilities.YoloV5\Utilities.YoloV5\bin\x64\Debug\Utilities.YoloV5.dll</HintPath>
+    <Reference Include="Utilities">
+      <HintPath>C:\COER\Utilities.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gRPCImpl.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

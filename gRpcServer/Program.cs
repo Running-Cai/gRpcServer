@@ -1,7 +1,6 @@
 ﻿using AIServer;
 using Grpc.Core;
 using HalconDotNet;
-using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,8 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using Utilities.YoloV5;
 
 namespace gRpcServer
 {
@@ -19,7 +16,6 @@ namespace gRpcServer
         static int Port = 9007;
         static string address = "127.0.0.1";
         private const int GRPC_MAX_RECEIVE_MESSAGE_LENGTH = (20 * 1024 * 1024);
-        private static Utilities.YoloV5.Inference inference;
         static void Main(string[] args)
         {
             try
@@ -27,7 +23,7 @@ namespace gRpcServer
                 if (File.Exists("system.txt"))
                 {
                     var readr = File.ReadAllLines("system.txt");
-                    //address = readr[0];
+                    address = readr[0];
                     Port = Convert.ToInt32(readr[1]);
                 }
                 else
@@ -39,15 +35,15 @@ namespace gRpcServer
                         file.WriteLine(Port);
                     }
                 }
-                GetNetAndClass("AUO_Foreign_v11", out string modelpath, out List<string> classNames,
-                   out double train_Width, out double train_Height, out string dirpath, out string net_name, out string ouput_name);
+                //GetNetAndClass("AUO_Foreign_v11", out string modelpath, out List<string> classNames,
+                //   out double train_Width, out double train_Height, out string dirpath, out string net_name, out string ouput_name);
 
 
-                inference = new Inference(modelpath, new OpenCvSharp.Size(train_Width, train_Height), 0.8f, classNames);
+                //inference = new Inference(modelpath, new OpenCvSharp.Size(train_Width, train_Height), 0.8f, classNames);
 
                 var channelOptions = new List<ChannelOption>();
                 channelOptions.Add(new ChannelOption(ChannelOptions.MaxReceiveMessageLength, GRPC_MAX_RECEIVE_MESSAGE_LENGTH));
-                gRPCImpl gRPCImpl = new gRPCImpl(inference);
+                gRPCImpl gRPCImpl = new gRPCImpl();
                 Server server = new Server(channelOptions)
                 {
                     Services = { AIGrpcService.BindService(gRPCImpl) },
@@ -55,7 +51,7 @@ namespace gRpcServer
                 };
 
                 server.Start();
-                Console.WriteLine("gRPC server listening on IP " + address + "Rort:" + Port);
+                Console.WriteLine("gRPC server listening on IP " + address + " Rort:" + Port);
                 Console.ReadKey();
                 server.ShutdownAsync().Wait();
             }
@@ -86,37 +82,6 @@ namespace gRpcServer
             dirpath = lines[2];
             net_name = lines[3].Split(':')[1];
             ouput_name = lines[4].Split(':')[1];
-        }
-
-    }
-    class gRPCImpl : AIGrpcService.AIGrpcServiceBase
-    {
-        Utilities.YoloV5.Inference inference;
-        public gRPCImpl(Utilities.YoloV5.Inference inference)
-        {
-            this.inference = inference;
-        }
-        public override Task<ProcessReply> ProcessImage(ProcessRequest request, ServerCallContext context)
-        {
-            var data = request.Iamges.ToArray();
-            string ALLResult = "";
-            var images = AITools.ImageConvert.ConvertByteArrayToMatList(data);
-            for (int i = 0; i < images.Count; i++)
-            {
-                var colorImage = new Mat();
-                Cv2.CvtColor(images[i], colorImage, ColorConversionCodes.GRAY2BGR);
-                colorImage.SaveImage($"C:\\Users\\COER\\Desktop\\新建文件夹 (2)\\{i}.jpg");
-                var result3 = inference.RunInference(colorImage);
-                //ALLResult += "|" + result3;
-                colorImage.Dispose();
-                images[i].Dispose();
-            }
-         
-            Console.WriteLine("传输完成");
-
-
-            return Task.FromResult(new ProcessReply { Message= "传输完成cjt9527" });
-
         }
 
     }

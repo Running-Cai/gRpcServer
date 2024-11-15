@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+package aIServer;
+
+service AIGrpcService {
+
+  rpc ProcessImage (ProcessRequest) returns (ProcessReply) {}
+
+}
+
+
+message ProcessRequest {
+
+  bytes iamges = 1;
+}
+ 
+
+message ProcessReply {
+
+  string message = 1;
+}
